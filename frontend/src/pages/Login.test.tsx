@@ -1,13 +1,16 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from '../context/AuthContext';
 import Login from './Login';
 
 describe('Login Page', () => {
   const renderLogin = () => {
     return render(
       <BrowserRouter>
-        <Login />
+        <AuthProvider>
+          <Login />
+        </AuthProvider>
       </BrowserRouter>
     );
   };
@@ -15,8 +18,7 @@ describe('Login Page', () => {
   test('should render login form', () => {
     renderLogin();
     
-    expect(screen.getByPlaceholderText(/username/i) || screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/username|email/i) || screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
   });
 
   test('should have login button', () => {

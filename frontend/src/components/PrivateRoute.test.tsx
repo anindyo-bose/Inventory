@@ -8,25 +8,15 @@ describe('PrivateRoute Component', () => {
   const TestComponent = () => <div>Protected Content</div>;
 
   test('should render when user is authenticated', () => {
-    // Mock authenticated state
-    const MockAuthContext = React.createContext({
-      user: { id: 1, username: 'testuser' },
-      loading: false
-    });
-
-    const renderPrivateRoute = () => {
-      return render(
-        <BrowserRouter>
-          <MockAuthContext.Provider value={{ user: { id: 1, username: 'testuser' }, loading: false }}>
-            <PrivateRoute>
-              <TestComponent />
-            </PrivateRoute>
-          </MockAuthContext.Provider>
-        </BrowserRouter>
-      );
-    };
-
-    renderPrivateRoute();
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PrivateRoute>
+            <TestComponent />
+          </PrivateRoute>
+        </AuthProvider>
+      </BrowserRouter>
+    );
     expect(document.body).toBeInTheDocument();
   });
 
