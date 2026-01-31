@@ -1,0 +1,63 @@
+name: Code Quality Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ develop ]
+
+jobs:
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+    
+    - name: Audit backend dependencies
+      run: npm audit --audit-level=moderate
+      working-directory: backend
+      continue-on-error: true
+    
+    - name: Audit frontend dependencies
+      run: npm audit --audit-level=moderate
+      working-directory: frontend
+      continue-on-error: true
+
+  dependency-check:
+    name: Dependency Updates
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check for outdated packages (backend)
+      run: npm outdated
+      working-directory: backend
+      continue-on-error: true
+    
+    - name: Check for outdated packages (frontend)
+      run: npm outdated
+      working-directory: frontend
+      continue-on-error: true
+
+  validate-config:
+    name: Validate Configuration Files
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate package.json files
+      run: |
+        node -e "JSON.parse(require('fs').readFileSync('backend/package.json', 'utf8'))" && echo "✅ backend/package.json is valid"
+        node -e "JSON.parse(require('fs').readFileSync('frontend/package.json', 'utf8'))" && echo "✅ frontend/package.json is valid"
+        node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))" && echo "✅ root package.json is valid"
+    
+    - name: Validate TypeScript config
+      run: node -e "JSON.parse(require('fs').readFileSync('frontend/tsconfig.json', 'utf8'))" && echo "✅ frontend/tsconfig.json is valid"

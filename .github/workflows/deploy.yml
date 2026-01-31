@@ -1,0 +1,67 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: |
+          backend/package-lock.json
+          frontend/package-lock.json
+    
+    - name: Install backend dependencies
+      run: npm install
+      working-directory: backend
+    
+    - name: Install frontend dependencies
+      run: npm install
+      working-directory: frontend
+    
+    - name: Build frontend
+      run: npm run build
+      working-directory: frontend
+      env:
+        CI: false
+    
+    - name: Test backend syntax
+      run: node -c server.js
+      working-directory: backend
+    
+    - name: Run tests (if any)
+      run: npm test --if-present
+      working-directory: backend
+      continue-on-error: true
+    
+    - name: Create deployment artifact
+      run: |
+        mkdir -p deployment
+        cp -r backend deployment/
+        cp -r frontend/build deployment/frontend-build
+        cp package.json deployment/
+        cp README.md deployment/
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-artifact
+        path: deployment/
+        retention-days: 30
+    
+    - name: Deployment Summary
+      run: |
+        echo "✅ Deployment artifact created successfully"
+        echo "📦 Backend ready at deployment/backend"
+        echo "🎨 Frontend build ready at deployment/frontend-build"
