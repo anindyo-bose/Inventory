@@ -1,0 +1,6 @@
+{
+  "transactions": false,
+  "repairs": true,
+  "suppliers": false,
+  "users": true
+}

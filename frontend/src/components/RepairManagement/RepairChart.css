@@ -1,0 +1,162 @@
+.repair-chart {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #1a202c;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.chart-controls button {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4a5568;
+  transition: all 0.2s;
+}
+
+.chart-controls button:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.chart-controls button.active {
+  background: #3182ce;
+  color: white;
+  border-color: #3182ce;
+}
+
+.chart-container {
+  margin-top: 24px;
+}
+
+.chart-empty {
+  padding: 40px;
+  text-align: center;
+  color: #718096;
+}
+
+.chart-tooltip {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a202c;
+}
+
+.chart-summary {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: #718096;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.summary-value.profit {
+  color: #38a169;
+}
+
+.summary-value.due {
+  color: #d69e2e;
+}
+
+@media (max-width: 768px) {
+  .repair-chart {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .chart-header h3 {
+    font-size: 18px;
+  }
+
+  .chart-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .chart-controls button {
+    flex: 1;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .chart-container {
+    margin-top: 16px;
+    overflow-x: auto;
+  }
+
+  .chart-summary {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .summary-item {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .summary-value {
+    font-size: 18px;
+  }
+}
+

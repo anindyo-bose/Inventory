@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "id": "transactions",
+      "label": "Transaction Management",
+      "path": "/dashboard/transactions",
+      "icon": "💰",
+      "roles": ["super_admin", "admin", "user", "viewer"]
+    },
+    {
+      "id": "repairs",
+      "label": "Repair Management",
+      "path": "/dashboard/repairs",
+      "icon": "🔧",
+      "roles": ["super_admin", "admin", "user", "viewer"]
+    },
+    {
+      "id": "suppliers",
+      "label": "Supplier Management",
+      "path": "/dashboard/suppliers",
+      "icon": "🏢",
+      "roles": ["super_admin", "admin", "user"]
+    },
+    {
+      "id": "inventory",
+      "label": "Inventory Management",
+      "path": "/dashboard/inventory",
+      "icon": "📦",
+      "roles": ["super_admin", "admin", "user"],
+      "disabled": true
+    },
+    {
+      "id": "reports",
+      "label": "Reports & Analytics",
+      "path": "/dashboard/reports",
+      "icon": "📊",
+      "roles": ["super_admin", "admin"],
+      "disabled": true
+    },
+    {
+      "id": "users",
+      "label": "User Management",
+      "path": "/dashboard/users",
+      "icon": "👥",
+      "roles": ["super_admin"],
+      "disabled": false
+    }
+  ]
+}
+

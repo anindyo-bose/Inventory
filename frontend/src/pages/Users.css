@@ -1,0 +1,114 @@
+.users-page {
+  padding: 24px;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.users-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.user-form {
+  display: grid;
+  gap: 12px;
+}
+
+.user-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.user-form input,
+.user-form select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.user-form button {
+  margin-top: 4px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.user-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.success-text {
+  color: #059669;
+  font-weight: 600;
+}
+
+.error-text {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.users-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.user-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.user-meta {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.role-badge {
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.role-super_admin {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+.role-admin {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.role-user {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.role-viewer {
+  background: #6b7280;
+  color: #ffffff;
+}
+
+

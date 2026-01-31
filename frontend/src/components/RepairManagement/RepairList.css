@@ -1,0 +1,57 @@
+.repair-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.repair-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.repair-list-header h2 {
+  font-size: 20px;
+  color: #1a202c;
+}
+
+.repair-count {
+  font-size: 14px;
+  color: #718096;
+}
+
+.repair-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .repair-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .repair-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+.repair-list-loading,
+.repair-list-empty {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  color: #718096;
+}
+
+.loading-spinner {
+  font-size: 16px;
+}
+
+
+

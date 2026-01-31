@@ -1,0 +1,44 @@
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.transaction-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction-list-header h2 {
+  font-size: 20px;
+  color: #1a202c;
+}
+
+.transaction-count {
+  font-size: 14px;
+  color: #718096;
+}
+
+.transaction-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 16px;
+}
+
+.transaction-list-loading,
+.transaction-list-empty {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  color: #718096;
+}
+
+.loading-spinner {
+  font-size: 16px;
+}
+
+
+
+

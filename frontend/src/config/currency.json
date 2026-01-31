@@ -1,0 +1,7 @@
+{
+  "symbol": "₹",
+  "code": "INR",
+  "name": "Indian Rupee",
+  "position": "before",
+  "decimalPlaces": 2
+}
