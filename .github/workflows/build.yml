@@ -29,6 +29,11 @@ jobs:
       run: npm install
       working-directory: backend
     
+    - name: Run backend tests with coverage
+      run: npm test -- --coverage
+      working-directory: backend
+      continue-on-error: false
+    
     - name: Check backend syntax
       run: node -c server.js
       working-directory: backend
@@ -36,6 +41,14 @@ jobs:
     - name: List installed dependencies
       run: npm list --depth=0
       working-directory: backend
+    
+    - name: Upload backend coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./backend/coverage/coverage-final.json
+        flags: backend
+        fail_ci_if_error: false
+      continue-on-error: true
 
   frontend:
     name: Frontend Build
@@ -59,6 +72,12 @@ jobs:
       run: npm install
       working-directory: frontend
     
+    - name: Run frontend tests with coverage
+      run: npm test -- --coverage --watchAll=false
+      working-directory: frontend
+      env:
+        CI: true
+    
     - name: Build React app
       run: npm run build
       working-directory: frontend
@@ -68,6 +87,14 @@ jobs:
     - name: Check for TypeScript errors
       run: npx tsc --noEmit
       working-directory: frontend
+      continue-on-error: true
+    
+    - name: Upload frontend coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./frontend/coverage/coverage-final.json
+        flags: frontend
+        fail_ci_if_error: false
       continue-on-error: true
 
   lint:
