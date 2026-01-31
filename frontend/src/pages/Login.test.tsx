@@ -3,8 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Login from './Login';
 
-jest.mock('axios');
-
 describe('Login Page', () => {
   const renderLogin = () => {
     return render(

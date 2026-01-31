@@ -3,8 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import TransactionList from './TransactionList';
 
-jest.mock('axios');
-
 describe('TransactionList Component', () => {
   test('should render without crashing', () => {
     render(

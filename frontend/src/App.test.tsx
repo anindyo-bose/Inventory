@@ -1,11 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../context/AuthContext';
-import App from '../App';
-
-// Mock the axios module
-jest.mock('axios');
+import { AuthProvider } from './context/AuthContext';
+import App from './App';
 
 describe('App Component', () => {
   test('should render without crashing', () => {
