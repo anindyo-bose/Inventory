@@ -1,42 +1,34 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
 import { AuthProvider } from './context/AuthContext';
 import App from './App';
 
 describe('App Component', () => {
   test('should render without crashing', () => {
     render(
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     );
   });
 
-  test('should render login page by default', () => {
+  test('should render app with auth provider', () => {
     render(
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     );
 
-    // Check if we can navigate - the app structure should exist
-    expect(document.querySelector('.app-container') || document.body).toBeInTheDocument();
+    expect(document.body).toBeInTheDocument();
   });
 });
 
 describe('App Routing', () => {
   test('should have proper router setup', () => {
     const { container } = render(
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     );
 
     expect(container.firstChild).toBeInTheDocument();
