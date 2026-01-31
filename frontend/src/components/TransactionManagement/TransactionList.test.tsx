@@ -9,7 +9,7 @@ describe('TransactionList Component', () => {
   test('should render without crashing', () => {
     render(
       <BrowserRouter>
-        <TransactionList />
+        <TransactionList transactions={[]} loading={false} />
       </BrowserRouter>
     );
     expect(document.body).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe('TransactionList Component', () => {
   test('should render transaction list container', () => {
     const { container } = render(
       <BrowserRouter>
-        <TransactionList />
+        <TransactionList transactions={[]} loading={false} />
       </BrowserRouter>
     );
     expect(container).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('TransactionList Component', () => {
   test('should have proper component structure', () => {
     const { container } = render(
       <BrowserRouter>
-        <TransactionList />
+        <TransactionList transactions={[]} loading={false} />
       </BrowserRouter>
     );
     expect(container.firstChild).toBeInTheDocument();
