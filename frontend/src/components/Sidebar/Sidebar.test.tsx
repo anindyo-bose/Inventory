@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import Sidebar from '../components/Sidebar/Sidebar';
+import Sidebar from './Sidebar';
 
 describe('Sidebar Component', () => {
   test('should render without crashing', () => {
