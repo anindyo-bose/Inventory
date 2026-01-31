@@ -4,12 +4,17 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 // Mock Login component
-const MockLoginForm = ({ onSubmit, isLoading }) => {
+interface MockLoginFormProps {
+  onSubmit: (data: { email: string; password: string }) => Promise<void>;
+  isLoading: boolean;
+}
+
+const MockLoginForm = ({ onSubmit, isLoading }: MockLoginFormProps) => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Email and password required');
@@ -18,7 +23,7 @@ const MockLoginForm = ({ onSubmit, isLoading }) => {
     try {
       await onSubmit({ email, password });
     } catch (err) {
-      setError(err.message);
+      setError((err as Error).message);
     }
   };
 
@@ -27,7 +32,7 @@ const MockLoginForm = ({ onSubmit, isLoading }) => {
       <input
         type="email"
         value={email}
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setEmail(e.target.value);
           setError('');
         }}
@@ -37,7 +42,7 @@ const MockLoginForm = ({ onSubmit, isLoading }) => {
       <input
         type="password"
         value={password}
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setPassword(e.target.value);
           setError('');
         }}
@@ -53,7 +58,16 @@ const MockLoginForm = ({ onSubmit, isLoading }) => {
 };
 
 // Mock Header component with role-based visibility
-const MockHeader = ({ user }) => {
+interface User {
+  username: string;
+  role: string;
+}
+
+interface MockHeaderProps {
+  user: User | null;
+}
+
+const MockHeader = ({ user }: MockHeaderProps) => {
   return (
     <header>
       <h1>Inventory System</h1>
@@ -73,7 +87,18 @@ const MockHeader = ({ user }) => {
 };
 
 // Mock list component
-const MockList = ({ items, onDelete, onEdit }) => {
+interface ListItem {
+  id: number;
+  name: string;
+}
+
+interface MockListProps {
+  items: ListItem[];
+  onDelete: (id: number) => void;
+  onEdit: (item: ListItem) => void;
+}
+
+const MockList = ({ items, onDelete, onEdit }: MockListProps) => {
   return (
     <div>
       <div data-testid="item-count">{items.length}</div>
