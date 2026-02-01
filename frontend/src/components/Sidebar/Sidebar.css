@@ -3,23 +3,14 @@
   background: white;
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 90;
   overflow-y: auto;
   overflow-x: hidden;
-  transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    transform: translateX(-100%);
     width: 280px;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
   }
 }
 

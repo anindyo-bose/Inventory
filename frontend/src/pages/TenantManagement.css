@@ -1,0 +1,420 @@
+/**
+ * Tenant Management Page Styles
+ */
+
+.tenant-management {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.tm-header {
+  margin-bottom: 30px;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tm-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tm-header p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.tm-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  max-width: 1400px;
+}
+
+/* Alerts */
+.tm-alert {
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tm-alert.tm-error {
+  background: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #c62828;
+}
+
+.tm-alert.tm-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
+}
+
+/* Panels */
+.tm-tenants-panel,
+.tm-details-panel {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.tm-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tm-panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tm-member-count {
+  font-size: 12px;
+  color: #999;
+  margin-left: auto;
+}
+
+/* Buttons */
+.tm-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tm-btn-primary {
+  background: #4285f4;
+  color: white;
+}
+
+.tm-btn-primary:hover:not(:disabled) {
+  background: #1967d2;
+}
+
+.tm-btn-secondary {
+  background: #e8e8e8;
+  color: #333;
+}
+
+.tm-btn-secondary:hover:not(:disabled) {
+  background: #d3d3d3;
+}
+
+.tm-btn-danger {
+  background: #f44336;
+  color: white;
+}
+
+.tm-btn-danger:hover:not(:disabled) {
+  background: #d32f2f;
+}
+
+.tm-btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* Forms */
+.tm-form {
+  padding: 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tm-form-group {
+  margin-bottom: 16px;
+}
+
+.tm-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.tm-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.tm-form-group input,
+.tm-form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.tm-form-group input:focus,
+.tm-form-group select:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.tm-form-group small {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.tm-form button {
+  width: 100%;
+}
+
+/* Tenant List */
+.tm-tenants-list {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.tm-tenant-card {
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tm-tenant-card:hover {
+  background: #f0f0f0;
+  border-color: #4285f4;
+}
+
+.tm-tenant-card.active {
+  background: #e8f0fe;
+  border-color: #4285f4;
+  font-weight: 500;
+}
+
+.tm-tenant-card h3 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tm-tenant-card .tm-slug {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.tm-tenant-card .tm-status {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tm-status-active {
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 2px 6px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.tm-status-suspended {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 2px 6px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* Details Panel */
+.tm-details-panel {
+  min-height: 400px;
+}
+
+.tm-tenant-info {
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.tm-tenant-info p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.tm-tenant-info p:last-child {
+  margin-bottom: 0;
+}
+
+.tm-tenant-info strong {
+  color: #000;
+}
+
+/* Members Section */
+.tm-members-section {
+  padding: 20px;
+}
+
+.tm-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tm-section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tm-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tm-member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.tm-member-info {
+  flex: 1;
+}
+
+.tm-member-name {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tm-member-email {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.tm-member-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tm-role-select {
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Empty States */
+.tm-empty,
+.tm-empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.tm-empty-state {
+  padding: 80px 20px;
+}
+
+.tm-loading {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Permission Denied */
+.permission-denied {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  margin: 40px auto;
+  max-width: 500px;
+}
+
+.permission-denied h2 {
+  color: #d32f2f;
+  margin-bottom: 16px;
+}
+
+.permission-denied p {
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .tm-container {
+    grid-template-columns: 250px 1fr;
+  }
+
+  .tm-tenants-list {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tm-container {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-tenants-panel {
+    display: none;
+  }
+
+  .tm-details-panel {
+    grid-column: 1;
+  }
+
+  .tm-member-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tm-member-actions {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .tm-role-select {
+    flex: 1;
+  }
+}

@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import MainLayout from './pages/MainLayout';
+import TenantSelectPage from './pages/TenantSelectPage';
 import PrivateRoute from './components/PrivateRoute';
 import featureConfig from './config/features.json';
 import './App.css';
@@ -26,11 +27,19 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard/*"
+          <Route 
+            path="/select-tenant" 
             element={
               <PrivateRoute>
-                <Dashboard />
+                <TenantSelectPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route
+            path="/*"
+            element={
+              <PrivateRoute>
+                <MainLayout />
               </PrivateRoute>
             }
           />

@@ -7,7 +7,10 @@ const authRoutes = require('./routes/auth');
 const transactionRoutes = require('./routes/transactions');
 const repairRoutes = require('./routes/repairs');
 const supplierRoutes = require('./routes/suppliers');
+const tenantRoutes = require('./routes/tenants');
 const { authenticateToken, authorizeRoles, validateAndSanitize, addSecurityHeaders, preventSensitiveLogging } = require('./middleware/auth');
+const tenantContextMiddleware = require('./middleware/tenantContext');
+const { initializeSampleData } = require('./data/sampleData');
 
 dotenv.config();
 
@@ -64,11 +67,43 @@ app.use((req, res, next) => {
 // Sanitize all inputs
 app.use(validateAndSanitize);
 
-// Routes
+// ============ MULTI-TENANCY SETUP ============
+// Initialize data stores for tenants and memberships (in-memory)
+const tenantsStore = [];
+const membershipsStore = [];
+
+// Initialize sample data for development (optional, environment-based)
+initializeSampleData(tenantsStore, membershipsStore);
+
+console.log(`[Multi-Tenancy] Initialized with ${tenantsStore.length} tenants and ${membershipsStore.length} memberships`);
+console.log(`[Multi-Tenancy] NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+
+// Initialize tenant routes with data store references
+const tenantRoutes_module = require('./routes/tenants');
+
+// Get the users list from auth module
+let usersList = [];
+try {
+  // We'll need to extract users from auth after it's required
+  // This is a bit hacky but necessary due to module structure
+} catch (err) {
+  console.warn('Could not load users list for tenant initialization');
+}
+
+// Routes - TENANT CONTEXT MIDDLEWARE applied after authentication
+// This extracts tenantId and role from JWT if available
 app.use('/api/auth', loginLimiter, authRoutes);
-app.use('/api/transactions', authenticateToken, transactionRoutes);
-app.use('/api/repairs', authenticateToken, repairRoutes);
-app.use('/api/suppliers', authenticateToken, supplierRoutes);
+
+// Apply tenant context middleware to all authenticated routes
+app.use('/api/transactions', authenticateToken, tenantContextMiddleware, transactionRoutes);
+app.use('/api/repairs', authenticateToken, tenantContextMiddleware, repairRoutes);
+app.use('/api/suppliers', authenticateToken, tenantContextMiddleware, supplierRoutes);
+
+// Initialize tenant routes with stores and pass empty users list (users are in auth.js)
+tenantRoutes_module.initializeTenantRoutes(tenantsStore, membershipsStore, []);
+
+// Register tenant routes
+app.use('/api/tenants', authenticateToken, tenantContextMiddleware, tenantRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

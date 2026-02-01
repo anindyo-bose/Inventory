@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const { authorizeRoles } = require('../middleware/auth');
+const { filterAccessible, ensureAccessible, addTenantId } = require('../utils/dataIsolation');
 
 // Mock suppliers database (in production, use a real database)
 let suppliers = [
@@ -120,20 +121,32 @@ let payments = [
 ];
 
 // Get all suppliers
+// TENANT ISOLATION: Filters by tenantId if user is in a tenant
 router.get('/', (req, res) => {
-  res.json({ suppliers });
+  const accessibleSuppliers = filterAccessible(suppliers, req.context);
+  res.json({ suppliers: accessibleSuppliers });
 });
 
 // Get supplier by ID
+// TENANT ISOLATION: Verifies user has access to the supplier
 router.get('/:id', (req, res) => {
   const supplier = suppliers.find(s => s.id === parseInt(req.params.id));
   if (!supplier) {
     return res.status(404).json({ message: 'Supplier not found' });
   }
+  
+  // Check tenant isolation
+  try {
+    ensureAccessible(supplier, req.context, 'Supplier');
+  } catch (error) {
+    return res.status(error.status || 403).json({ message: error.message });
+  }
+  
   res.json({ supplier });
 });
 
 // Create new supplier (admin only, viewers cannot create)
+// TENANT ISOLATION: Automatically adds tenantId to new supplier if user is in a tenant
 router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
   body('name').notEmpty().withMessage('Supplier name is required'),
   body('contactPerson').notEmpty().withMessage('Contact person is required')
@@ -157,6 +170,9 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
       createdBy: req.user.username
     };
 
+    // Add tenantId if user is in a tenant
+    addTenantId(newSupplier, req.context);
+
     suppliers.push(newSupplier);
     res.status(201).json({ supplier: newSupplier });
   } catch (error) {
@@ -166,6 +182,7 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Update supplier (admin only, viewers cannot update)
+// TENANT ISOLATION: Verifies user has access before updating
 router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
   body('name').optional().notEmpty(),
   body('contactPerson').optional().notEmpty()
@@ -179,6 +196,13 @@ router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
     const supplier = suppliers.find(s => s.id === parseInt(req.params.id));
     if (!supplier) {
       return res.status(404).json({ message: 'Supplier not found' });
+    }
+
+    // Check tenant isolation
+    try {
+      ensureAccessible(supplier, req.context, 'Supplier');
+    } catch (error) {
+      return res.status(error.status || 403).json({ message: error.message });
     }
 
     const { name, contactPerson, email, phone, address } = req.body;
@@ -197,12 +221,21 @@ router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Delete supplier (admin only, viewers cannot delete)
+// TENANT ISOLATION: Verifies user has access before deleting
 router.delete('/:id', authorizeRoles('super_admin', 'admin', 'user'), (req, res) => {
-  const index = suppliers.findIndex(s => s.id === parseInt(req.params.id));
-  if (index === -1) {
+  const supplier = suppliers.find(s => s.id === parseInt(req.params.id));
+  if (!supplier) {
     return res.status(404).json({ message: 'Supplier not found' });
   }
 
+  // Check tenant isolation
+  try {
+    ensureAccessible(supplier, req.context, 'Supplier');
+  } catch (error) {
+    return res.status(error.status || 403).json({ message: error.message });
+  }
+
+  const index = suppliers.findIndex(s => s.id === parseInt(req.params.id));
   suppliers.splice(index, 1);
   // Also delete related bills and payments
   bills = bills.filter(b => b.supplierId !== parseInt(req.params.id));

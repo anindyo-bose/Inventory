@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const { authorizeRoles } = require('../middleware/auth');
+const { filterAccessible, ensureAccessible, addTenantId } = require('../utils/dataIsolation');
 
 // Mock repairs database (in production, use a real database)
 // Generate sample data for the past month
@@ -64,26 +65,41 @@ const generateSampleRepairs = () => {
 let repairs = generateSampleRepairs();
 
 // Get all repairs
+// TENANT ISOLATION: Filters by tenantId if user is in a tenant
 router.get('/', (req, res) => {
   // Ensure all repairs have advanceAmount field (for backward compatibility)
-  const repairsWithAdvance = repairs.map(repair => ({
+  let repairsWithAdvance = repairs.map(repair => ({
     ...repair,
     advanceAmount: repair.advanceAmount || 0
   }));
+  
+  // Filter repairs based on tenant context
+  repairsWithAdvance = filterAccessible(repairsWithAdvance, req.context);
+  
   res.json({ repairs: repairsWithAdvance });
 });
 
 // Get repair by ID
+// TENANT ISOLATION: Verifies user has access to the repair
 router.get('/:id', (req, res) => {
   const repair = repairs.find(r => r.id === parseInt(req.params.id));
   if (!repair) {
     return res.status(404).json({ message: 'Repair not found' });
   }
+  
+  // Check tenant isolation
+  try {
+    ensureAccessible(repair, req.context, 'Repair');
+  } catch (error) {
+    return res.status(error.status || 403).json({ message: error.message });
+  }
+  
   // Ensure advanceAmount field exists (for backward compatibility)
   res.json({ repair: { ...repair, advanceAmount: repair.advanceAmount || 0 } });
 });
 
 // Create new repair (viewers cannot create)
+// TENANT ISOLATION: Automatically adds tenantId to new repair if user is in a tenant
 router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
   body('customerName').notEmpty().withMessage('Customer name is required'),
   body('customerContact')
@@ -105,6 +121,7 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
       forwardedTo,
       repairCost,
       amountCharged,
+      advanceAmount,
       status,
       dueDate,
       notes,
@@ -138,6 +155,9 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
       notes: notes || ''
     };
 
+    // Add tenantId if user is in a tenant
+    addTenantId(newRepair, req.context);
+
     repairs.push(newRepair);
     res.status(201).json({ repair: newRepair });
   } catch (error) {
@@ -147,6 +167,7 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Update repair (viewers cannot update)
+// TENANT ISOLATION: Verifies user has access before updating
 router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
   body('customerName').optional().notEmpty().withMessage('Customer name cannot be empty'),
   body('customerContact')
@@ -164,6 +185,13 @@ router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
     const repair = repairs.find(r => r.id === parseInt(req.params.id));
     if (!repair) {
       return res.status(404).json({ message: 'Repair not found' });
+    }
+
+    // Check tenant isolation
+    try {
+      ensureAccessible(repair, req.context, 'Repair');
+    } catch (error) {
+      return res.status(error.status || 403).json({ message: error.message });
     }
 
     const {
@@ -218,12 +246,21 @@ router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Delete repair (viewers cannot delete)
+// TENANT ISOLATION: Verifies user has access before deleting
 router.delete('/:id', authorizeRoles('super_admin', 'admin', 'user'), (req, res) => {
-  const index = repairs.findIndex(r => r.id === parseInt(req.params.id));
-  if (index === -1) {
+  const repair = repairs.find(r => r.id === parseInt(req.params.id));
+  if (!repair) {
     return res.status(404).json({ message: 'Repair not found' });
   }
 
+  // Check tenant isolation
+  try {
+    ensureAccessible(repair, req.context, 'Repair');
+  } catch (error) {
+    return res.status(error.status || 403).json({ message: error.message });
+  }
+
+  const index = repairs.findIndex(r => r.id === parseInt(req.params.id));
   repairs.splice(index, 1);
   res.json({ message: 'Repair deleted successfully' });
 });

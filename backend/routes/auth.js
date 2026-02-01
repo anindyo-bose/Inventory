@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult, param } = require('express-validator');
 const router = express.Router();
 const { authenticateToken, authorizeRoles, sanitizeInput } = require('../middleware/auth');
+const { generateAuthToken } = require('../utils/jwtHelper');
 
 // Mock users database (in production, use a real database)
 // Password for all users: admin123
@@ -57,6 +58,33 @@ let users = [
     sha256Password: sha256Hash,
     role: 'viewer',
     name: 'Viewer'
+  },
+  {
+    id: 5,
+    username: 'john',
+    email: 'john@example.com',
+    password: hashedPassword,
+    sha256Password: sha256Hash,
+    role: 'admin',
+    name: 'John Doe'
+  },
+  {
+    id: 6,
+    username: 'jane',
+    email: 'jane@example.com',
+    password: hashedPassword,
+    sha256Password: sha256Hash,
+    role: 'user',
+    name: 'Jane Smith'
+  },
+  {
+    id: 7,
+    username: 'bob',
+    email: 'bob@example.com',
+    password: hashedPassword,
+    sha256Password: sha256Hash,
+    role: 'user',
+    name: 'Bob Johnson'
   }
 ];
 
@@ -116,19 +144,14 @@ router.post('/login', [
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { 
-        id: user.id, 
-        username: user.username, 
-        email: user.email, 
-        role: user.role,
-        name: user.name,
-        iat: Math.floor(Date.now() / 1000)
-      },
-      process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-      { expiresIn: '24h' }
-    );
+    // Generate JWT token with optional tenant info
+    // BACKWARD COMPATIBILITY: If user is not assigned to a tenant,
+    // tenantId and tenantRole will be undefined in the token
+    const token = generateAuthToken(user, {
+      // tenantId and tenantRole can be added here if user is in a specific tenant
+      // For now, only standard user info is included
+      // Tenant selection happens in a separate flow after login
+    });
 
     res.json({
       token,
@@ -272,6 +295,18 @@ router.get(
     
     const { password, ...safeUser } = currentUser;
     res.json({ user: safeUser });
+  }
+);
+
+// Get all users (for tenant management - Super Admin only)
+router.get(
+  '/users',
+  authenticateToken,
+  authorizeRoles('super_admin'),
+  (req, res) => {
+    // Never return passwords
+    const safeUsers = users.map(({ password, sha256Password, ...rest }) => rest);
+    res.json({ users: safeUsers });
   }
 );
 

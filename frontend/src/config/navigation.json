@@ -38,6 +38,14 @@
       "disabled": true
     },
     {
+      "id": "tenant-management",
+      "label": "Tenant Management",
+      "path": "/tenant-management",
+      "icon": "🏛️",
+      "roles": ["super_admin"],
+      "disabled": false
+    },
+    {
       "id": "users",
       "label": "User Management",
       "path": "/dashboard/users",

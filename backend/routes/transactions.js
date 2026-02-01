@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const router = express.Router();
 const { authorizeRoles } = require('../middleware/auth');
+const { filterAccessible, ensureAccessible, addTenantId } = require('../utils/dataIsolation');
 
 // Mock transactions database (in production, use a real database)
 let transactions = [
@@ -35,20 +36,35 @@ let transactions = [
 ];
 
 // Get all transactions
+// TENANT ISOLATION: Filters by tenantId if user is in a tenant
 router.get('/', (req, res) => {
-  res.json({ transactions });
+  // Filter transactions based on tenant context
+  // BACKWARD COMPATIBILITY: If req.context is not set or tenantId is undefined,
+  // returns all transactions (existing behavior)
+  const accessibleTransactions = filterAccessible(transactions, req.context);
+  res.json({ transactions: accessibleTransactions });
 });
 
 // Get transaction by ID
+// TENANT ISOLATION: Verifies user has access to the transaction
 router.get('/:id', (req, res) => {
   const transaction = transactions.find(t => t.id === parseInt(req.params.id));
   if (!transaction) {
     return res.status(404).json({ message: 'Transaction not found' });
   }
+  
+  // Check tenant isolation
+  try {
+    ensureAccessible(transaction, req.context, 'Transaction');
+  } catch (error) {
+    return res.status(error.status || 403).json({ message: error.message });
+  }
+  
   res.json({ transaction });
 });
 
 // Create new transaction (viewers cannot create)
+// TENANT ISOLATION: Automatically adds tenantId to new transaction if user is in a tenant
 router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
   body('customerName').notEmpty().withMessage('Customer name is required'),
   body('items').isArray().withMessage('Items must be an array'),
@@ -77,6 +93,9 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
       createdBy: req.user.username
     };
 
+    // Add tenantId if user is in a tenant
+    addTenantId(newTransaction, req.context);
+
     transactions.push(newTransaction);
     res.status(201).json({ transaction: newTransaction });
   } catch (error) {
@@ -86,6 +105,7 @@ router.post('/', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Update transaction status (viewers cannot update)
+// TENANT ISOLATION: Verifies user has access before updating
 router.patch('/:id/status', authorizeRoles('super_admin', 'admin', 'user'), [
   body('sellingDone').optional().isBoolean(),
   body('paymentDone').optional().isBoolean()
@@ -99,6 +119,13 @@ router.patch('/:id/status', authorizeRoles('super_admin', 'admin', 'user'), [
     const transaction = transactions.find(t => t.id === parseInt(req.params.id));
     if (!transaction) {
       return res.status(404).json({ message: 'Transaction not found' });
+    }
+
+    // Check tenant isolation
+    try {
+      ensureAccessible(transaction, req.context, 'Transaction');
+    } catch (error) {
+      return res.status(error.status || 403).json({ message: error.message });
     }
 
     if (req.body.sellingDone !== undefined) {
@@ -116,6 +143,7 @@ router.patch('/:id/status', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Update transaction (viewers cannot update)
+// TENANT ISOLATION: Verifies user has access before updating
 router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
   body('customerName').optional().notEmpty(),
   body('items').optional().isArray()
@@ -129,6 +157,13 @@ router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
     const transaction = transactions.find(t => t.id === parseInt(req.params.id));
     if (!transaction) {
       return res.status(404).json({ message: 'Transaction not found' });
+    }
+
+    // Check tenant isolation
+    try {
+      ensureAccessible(transaction, req.context, 'Transaction');
+    } catch (error) {
+      return res.status(error.status || 403).json({ message: error.message });
     }
 
     if (req.body.customerName) transaction.customerName = req.body.customerName;
@@ -145,12 +180,21 @@ router.put('/:id', authorizeRoles('super_admin', 'admin', 'user'), [
 });
 
 // Delete transaction (viewers cannot delete)
+// TENANT ISOLATION: Verifies user has access before deleting
 router.delete('/:id', authorizeRoles('super_admin', 'admin', 'user'), (req, res) => {
-  const index = transactions.findIndex(t => t.id === parseInt(req.params.id));
-  if (index === -1) {
+  const transaction = transactions.find(t => t.id === parseInt(req.params.id));
+  if (!transaction) {
     return res.status(404).json({ message: 'Transaction not found' });
   }
 
+  // Check tenant isolation
+  try {
+    ensureAccessible(transaction, req.context, 'Transaction');
+  } catch (error) {
+    return res.status(error.status || 403).json({ message: error.message });
+  }
+
+  const index = transactions.findIndex(t => t.id === parseInt(req.params.id));
   transactions.splice(index, 1);
   res.json({ message: 'Transaction deleted successfully' });
 });
