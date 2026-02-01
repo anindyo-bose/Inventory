@@ -131,21 +131,25 @@ describe('RepairChart Component', () => {
       { ...mockRepairs[2], status: 'cancelled' as const },
     ];
     renderWithAuth(<RepairChart repairs={mixedStatusRepairs} />);
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    expect(screen.getByText(/financial overview/i)).toBeInTheDocument();
   });
 
   test('should render responsive chart', () => {
     const { container } = renderWithAuth(<RepairChart repairs={mockRepairs} />);
-    const chart = container.querySelector('[class*="chart"]');
+    const chart = container.querySelector('.repair-chart');
     expect(chart).toBeInTheDocument();
   });
 
   test('should update when repair data changes', () => {
     const { rerender } = renderWithAuth(<RepairChart repairs={mockRepairs} />);
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    expect(screen.getByText(/financial overview/i)).toBeInTheDocument();
 
-    rerender(<RepairChart repairs={[mockRepairs[0]]} />);
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    rerender(
+      <AuthProvider>
+        <RepairChart repairs={[mockRepairs[0]]} />
+      </AuthProvider>
+    );
+    expect(screen.getByText(/financial overview/i)).toBeInTheDocument();
   });
 
   test('should handle repairs with zero costs', () => {
@@ -153,7 +157,7 @@ describe('RepairChart Component', () => {
       { ...mockRepairs[0], repairCost: 0, amountCharged: 100 },
     ];
     renderWithAuth(<RepairChart repairs={zeroCostRepairs} />);
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    expect(screen.getByText(/total charged/i)).toBeInTheDocument();
   });
 
   test('should render status distribution chart', () => {
@@ -173,14 +177,14 @@ describe('RepairChart Component', () => {
 
   test('should display chart with proper dimensions', () => {
     const { container } = renderWithAuth(<RepairChart repairs={mockRepairs} />);
-    const chartContainer = container.querySelector('[class*="chart"]');
-    expect(chartContainer).toHaveClass(expect.stringContaining('chart'));
+    const chartContainer = container.querySelector('.repair-chart');
+    expect(chartContainer).toBeInTheDocument();
   });
 
   test('should render all chart sections', () => {
     const { container } = renderWithAuth(<RepairChart repairs={mockRepairs} />);
-    const sections = container.querySelectorAll('[class*="section"]');
-    expect(sections.length).toBeGreaterThanOrEqual(0);
+    const sections = container.querySelectorAll('.summary-item');
+    expect(sections.length).toBeGreaterThan(0);
   });
 
   test('should handle repairs with same costs', () => {
@@ -189,7 +193,7 @@ describe('RepairChart Component', () => {
       { ...mockRepairs[1], repairCost: 500 },
     ];
     renderWithAuth(<RepairChart repairs={sameCostRepairs} />);
-    expect(screen.getByRole('img', { hidden: true })).toBeInTheDocument();
+    expect(screen.getByText(/total charged/i)).toBeInTheDocument();
   });
 
   test('should update chart on data change', () => {

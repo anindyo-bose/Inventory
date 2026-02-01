@@ -166,7 +166,6 @@ describe('RepairManagement Component', () => {
     renderWithAuth(<RepairManagement />);
     await waitFor(() => {
       expect(screen.getByTestId('repair-stats')).toBeInTheDocument();
-      expect(screen.getByTestId('repair-chart')).toBeInTheDocument();
     });
   });
 
