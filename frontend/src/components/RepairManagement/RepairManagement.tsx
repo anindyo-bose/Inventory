@@ -38,6 +38,7 @@ const RepairManagement: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingRepair, setEditingRepair] = useState<Repair | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
 
   useEffect(() => {
     fetchRepairs();
@@ -105,8 +106,18 @@ const RepairManagement: React.FC = () => {
 
   const dueSoonCount = getDueSoonCount();
 
-  // Filter repairs based on search query (Bill No or Customer Name)
+  // Filter repairs based on search query and status filter
   const filteredRepairs = repairs.filter(repair => {
+    // Apply status filter
+    if (selectedFilter && selectedFilter !== 'all') {
+      if (selectedFilter === 'pending' && repair.status !== 'pending') return false;
+      if (selectedFilter === 'in_progress' && repair.status !== 'in_progress') return false;
+      if (selectedFilter === 'repaired' && repair.status !== 'repaired') return false;
+      if (selectedFilter === 'delivered' && repair.status !== 'delivered') return false;
+      if (selectedFilter === 'cancelled' && repair.status !== 'cancelled') return false;
+    }
+    
+    // Apply search filter
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase().trim();
     const billNoMatch = repair.billNo?.toLowerCase().includes(query);
@@ -127,7 +138,11 @@ const RepairManagement: React.FC = () => {
         </div>
       )}
       
-      <RepairStats repairs={repairs} />
+      <RepairStats 
+        repairs={repairs} 
+        selectedFilter={selectedFilter}
+        onFilterChange={setSelectedFilter}
+      />
       
       {isAdmin && <RepairChart repairs={repairs} />}
       

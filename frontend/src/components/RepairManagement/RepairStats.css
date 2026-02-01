@@ -8,25 +8,39 @@
 @media (max-width: 768px) {
   .repair-stats {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 8px;
   }
 
   .stat-card {
-    padding: 16px;
+    padding: 12px;
   }
 
   .stat-value {
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .stat-label {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .repair-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 10px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 9px;
   }
 }
 
@@ -36,6 +50,23 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: all 0.2s ease;
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.stat-card.clickable:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.stat-card.clickable.active {
+  border-color: #3182ce;
+  background-color: #ebf8ff;
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
 }
 
 .stat-value {

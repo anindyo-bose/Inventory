@@ -14,6 +14,42 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  gap: 16px;
+}
+
+.chart-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #4a5568;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.chart-toggle-button:hover {
+  color: #1a202c;
+}
+
+.toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s;
+  font-size: 12px;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(-180deg);
 }
 
 .chart-header h3 {
@@ -117,24 +153,31 @@
   }
 
   .chart-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .chart-header-left {
+    width: 100%;
   }
 
   .chart-header h3 {
-    font-size: 18px;
+    font-size: 16px;
+    margin: 0;
   }
 
   .chart-controls {
     width: 100%;
     justify-content: space-between;
+    margin-top: 12px;
   }
 
   .chart-controls button {
     flex: 1;
-    padding: 10px;
-    font-size: 13px;
+    padding: 8px;
+    font-size: 12px;
   }
 
   .chart-container {
@@ -156,7 +199,7 @@
   }
 
   .summary-value {
-    font-size: 18px;
+    font-size: 16px;
   }
 }
 
