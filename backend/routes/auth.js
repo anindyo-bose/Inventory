@@ -7,7 +7,17 @@ const { authenticateToken, authorizeRoles, sanitizeInput } = require('../middlew
 
 // Mock users database (in production, use a real database)
 // Password for all users: admin123
-const hashedPassword = bcrypt.hashSync('admin123', 10);
+const plainPassword = 'admin123';
+const hashedPassword = bcrypt.hashSync(plainPassword, 10);
+
+// Store SHA256 hash of plain password for frontend compatibility
+// SHA256('admin123' + 'inventory-app-salt-2024') = the value frontend will send
+const crypto = require('crypto');
+const salt = 'inventory-app-salt-2024';
+const sha256Hash = crypto
+  .createHash('sha256')
+  .update(`${plainPassword}${salt}`)
+  .digest('hex');
 
 const allowedRoles = ['super_admin', 'admin', 'user', 'viewer'];
 
@@ -17,6 +27,7 @@ let users = [
     username: 'superadmin',
     email: 'superadmin@example.com',
     password: hashedPassword,
+    sha256Password: sha256Hash, // Store SHA256 for frontend verification
     role: 'super_admin',
     name: 'Super Admin'
   },
@@ -25,6 +36,7 @@ let users = [
     username: 'admin',
     email: 'admin@example.com',
     password: hashedPassword,
+    sha256Password: sha256Hash,
     role: 'admin',
     name: 'Admin User'
   },
@@ -33,6 +45,7 @@ let users = [
     username: 'user',
     email: 'user@example.com',
     password: hashedPassword,
+    sha256Password: sha256Hash,
     role: 'user',
     name: 'Regular User'
   },
@@ -41,12 +54,13 @@ let users = [
     username: 'viewer',
     email: 'viewer@example.com',
     password: hashedPassword,
+    sha256Password: sha256Hash,
     role: 'viewer',
     name: 'Viewer'
   }
 ];
 
-// Login endpoint - supports both hashed and plain passwords for compatibility
+// Login endpoint - supports both hashed (SHA256 from frontend) and plain passwords
 router.post('/login', [
   body('username')
     .trim()
@@ -83,19 +97,18 @@ router.post('/login', [
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Verify password
-    // The frontend now sends a SHA256 hashed password, but we still verify against bcrypt
-    // The password parameter could be:
-    // 1. SHA256 hash from frontend (new secure method)
+    // Verify password - support both methods:
+    // 1. SHA256 hash from frontend (64 hex characters)
     // 2. Plain password (for backward compatibility)
-    let isValidPassword = await bcrypt.compare(password, user.password);
     
-    // If direct comparison fails, try with hashed version
-    // This allows frontend to send pre-hashed passwords
-    if (!isValidPassword && password.length === 64) {
-      // Password looks like SHA256 hash (64 hex chars)
-      // Hash it again for server-side verification
-      const doubleHashedPassword = await bcrypt.hash(password, 1);
+    let isValidPassword = false;
+
+    // Check if it's a SHA256 hash (64 hex characters)
+    if (password.length === 64 && /^[a-f0-9]{64}$/.test(password)) {
+      // Direct comparison with stored SHA256 hash
+      isValidPassword = password === user.sha256Password;
+    } else {
+      // It's a plain password, use bcrypt comparison
       isValidPassword = await bcrypt.compare(password, user.password);
     }
     
@@ -197,6 +210,13 @@ router.post(
 
       // Hash password with bcrypt
       const hashed = await bcrypt.hash(password, 12); // 12 salt rounds
+      
+      // Also compute SHA256 hash for frontend compatibility
+      const sha256Hashed = crypto
+        .createHash('sha256')
+        .update(`${password}${salt}`)
+        .digest('hex');
+      
       const nextId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
 
       const newUser = {
@@ -204,6 +224,7 @@ router.post(
         username,
         email,
         password: hashed,
+        sha256Password: sha256Hashed, // Store SHA256 for frontend verification
         role,
         name
       };
