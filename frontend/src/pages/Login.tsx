@@ -18,9 +18,13 @@ const Login: React.FC = () => {
 
     try {
       await login(username, password);
+      // Clear sensitive data from state
+      setPassword('');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');
+      // Clear password after failed attempt for security
+      setPassword('');
     } finally {
       setLoading(false);
     }
