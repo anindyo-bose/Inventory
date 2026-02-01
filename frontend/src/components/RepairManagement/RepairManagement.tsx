@@ -38,11 +38,24 @@ const RepairManagement: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingRepair, setEditingRepair] = useState<Repair | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(() => {
+    // Initialize from localStorage
+    const saved = localStorage.getItem('repairFilter');
+    return saved || null;
+  });
 
   useEffect(() => {
     fetchRepairs();
   }, []);
+
+  // Save filter to localStorage whenever it changes
+  useEffect(() => {
+    if (selectedFilter) {
+      localStorage.setItem('repairFilter', selectedFilter);
+    } else {
+      localStorage.removeItem('repairFilter');
+    }
+  }, [selectedFilter]);
 
   const fetchRepairs = async () => {
     try {
