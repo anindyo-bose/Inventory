@@ -235,7 +235,7 @@ describe('TransactionCard Component', () => {
       />
     );
     const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes[0].checked).toBe(false);
+    expect((checkboxes[0] as HTMLInputElement).checked).toBe(false);
   });
 
   test('should render paymentDone checkbox as unchecked initially', () => {
@@ -248,7 +248,7 @@ describe('TransactionCard Component', () => {
       />
     );
     const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes[1].checked).toBe(false);
+    expect((checkboxes[1] as HTMLInputElement).checked).toBe(false);
   });
 
   test('should render sellingDone checkbox as checked when true', () => {
@@ -261,7 +261,7 @@ describe('TransactionCard Component', () => {
       />
     );
     const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes[0].checked).toBe(true);
+    expect((checkboxes[0] as HTMLInputElement).checked).toBe(true);
   });
 
   test('should render paymentDone checkbox as checked when true', () => {
@@ -274,7 +274,7 @@ describe('TransactionCard Component', () => {
       />
     );
     const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes[1].checked).toBe(true);
+    expect((checkboxes[1] as HTMLInputElement).checked).toBe(true);
   });
 
   test('should call onStatusUpdate when sellingDone checkbox is clicked', () => {

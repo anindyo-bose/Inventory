@@ -75,7 +75,7 @@ describe('RepairList Component', () => {
 
   test('should render repair list', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
     expect(screen.getByText('Laptop')).toBeInTheDocument();
     expect(screen.getByText('Desktop')).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe('RepairList Component', () => {
 
   test('should render repair cards for each repair', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(screen.getByTestId('repair-card-1')).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('RepairList Component', () => {
 
   test('should call onEdit when edit button is clicked', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const editButtons = screen.getAllByRole('button', { name: /edit/i });
@@ -103,7 +103,7 @@ describe('RepairList Component', () => {
 
   test('should call onDelete when delete button is clicked', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
@@ -114,7 +114,7 @@ describe('RepairList Component', () => {
 
   test('should display empty state when no repairs', () => {
     render(
-      <RepairList repairs={[]} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={[]} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(screen.getByText(/no repair|empty|not found/i)).toBeInTheDocument();
@@ -128,7 +128,7 @@ describe('RepairList Component', () => {
     }));
 
     render(
-      <RepairList repairs={manyRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={manyRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     manyRepairs.forEach(repair => {
@@ -138,7 +138,7 @@ describe('RepairList Component', () => {
 
   test('should handle multiple edit operations', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const editButtons = screen.getAllByRole('button', { name: /edit/i });
@@ -154,7 +154,7 @@ describe('RepairList Component', () => {
 
   test('should handle multiple delete operations', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
@@ -170,7 +170,7 @@ describe('RepairList Component', () => {
 
   test('should display repair status', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(screen.getAllByText(/laptop|desktop/i).length).toBeGreaterThan(0);
@@ -183,7 +183,7 @@ describe('RepairList Component', () => {
     ];
 
     render(
-      <RepairList repairs={mixedRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mixedRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(screen.getAllByText(/laptop|desktop/i).length).toBeGreaterThan(0);
@@ -191,7 +191,7 @@ describe('RepairList Component', () => {
 
   test('should pass correct repair data to child cards', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     mockRepairs.forEach(repair => {
@@ -206,7 +206,7 @@ describe('RepairList Component', () => {
     ];
 
     render(
-      <RepairList repairs={sameStatusRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={sameStatusRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const editButtons = screen.getAllByRole('button', { name: /edit/i });
@@ -217,7 +217,7 @@ describe('RepairList Component', () => {
 
   test('should render in proper order', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const items = screen.getAllByText(/laptop|desktop/i);
@@ -226,7 +226,7 @@ describe('RepairList Component', () => {
 
   test('should not render add button', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const addButtons = screen.queryAllByRole('button', { name: /add|new|create/i });
@@ -239,7 +239,7 @@ describe('RepairList Component', () => {
     ];
 
     render(
-      <RepairList repairs={repairsWithoutNotes} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={repairsWithoutNotes} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(screen.getByTestId('repair-card-1')).toBeInTheDocument();
@@ -247,7 +247,7 @@ describe('RepairList Component', () => {
 
   test('should maintain edit callback context', () => {
     render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     const editButton = screen.getAllByRole('button', { name: /edit/i })[0];
@@ -266,7 +266,7 @@ describe('RepairList Component', () => {
     }));
 
     render(
-      <RepairList repairs={manyRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={manyRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(screen.getByTestId('repair-card-1')).toBeInTheDocument();
@@ -275,7 +275,7 @@ describe('RepairList Component', () => {
 
   test('should render list container', () => {
     const { container } = render(
-      <RepairList repairs={mockRepairs} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+      <RepairList repairs={mockRepairs} loading={false} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
 
     expect(container.querySelector('[class*="list"]')).toBeInTheDocument();

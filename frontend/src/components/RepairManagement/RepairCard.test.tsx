@@ -104,7 +104,9 @@ describe('RepairCard Component', () => {
 
   test('should render bill number when present', () => {
     renderWithAuth(<RepairCard repair={mockRepair} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
-    expect(screen.getByText(mockRepair.billNo)).toBeInTheDocument();
+    if (mockRepair.billNo) {
+      expect(screen.getByText(mockRepair.billNo)).toBeInTheDocument();
+    }
   });
 
   test('should call onEdit when edit button clicked', () => {
